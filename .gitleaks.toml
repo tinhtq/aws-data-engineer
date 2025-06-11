@@ -1,0 +1,75 @@
+# GitLeaks configuration for DMS Learning Scenarios
+
+title = "GitLeaks Configuration for AWS/Terraform DMS Learning Projects"
+
+[extend]
+# Use default rules and add custom ones
+useDefault = true
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["aws", "credentials"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Access Key"
+regex = '''[A-Za-z0-9/+=]{40}'''
+tags = ["aws", "credentials"]
+
+[[rules]]
+id = "terraform-aws-provider-secret"
+description = "Terraform AWS Provider Secret"
+regex = '''secret_key\s*=\s*["'][A-Za-z0-9/+=]{40}["']'''
+tags = ["terraform", "aws"]
+
+[[rules]]
+id = "database-connection-string"
+description = "Database connection string with credentials"
+regex = '''(mysql|postgres|mongodb|redshift)://[^:]+:[^@]+@'''
+tags = ["database", "credentials"]
+
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN [A-Z]+ PRIVATE KEY-----'''
+tags = ["private-key"]
+
+[[rules]]
+id = "terraform-sensitive-variable"
+description = "Terraform variable with potential sensitive data"
+regex = '''(password|secret|key|token)\s*=\s*["'][^"']+["']'''
+tags = ["terraform", "sensitive"]
+
+[[rules]]
+id = "aws-account-id"
+description = "AWS Account ID"
+regex = '''[0-9]{12}'''
+tags = ["aws", "account-id"]
+
+[allowlist]
+description = "Allowlist for false positives"
+paths = [
+    '''\.git/''',
+    '''\.github/workflows/''',
+    '''README\.md''',
+    '''\.secrets\.baseline''',
+    '''\.gitleaks\.toml''',
+    '''SECURITY\.md'''
+]
+
+regexes = [
+    '''ap-southeast-1''', # AWS region
+    '''example\.com''',   # Example domains
+    '''localhost''',      # Local development
+    '''127\.0\.0\.1''',   # Local IP
+    '''0\.0\.0\.0/0''',   # CIDR blocks
+    '''variable\s+"[^"]*password[^"]*"''', # Terraform variable declarations
+    '''description\s*=\s*["'][^"']*password[^"']*["']''', # Terraform descriptions
+    '''your-.*-here''',   # Placeholder values
+    '''xyz\.ap-southeast-1''', # Example hostnames
+    '''cluster-xyz''',    # Example cluster names
+    '''MySecurePassword123!''', # Example passwords in templates
+    '''RedshiftSecure123!'''    # Example passwords in templates
+]

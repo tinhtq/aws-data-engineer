@@ -25,13 +25,6 @@ MySQL RDS → DMS Replication Instance → Amazon Redshift
 
 ### Step 1: Deploy Infrastructure
 ```bash
-# Verify AWS account
-ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-if [ "$ACCOUNT_ID" != "276084501312" ]; then
-  echo "ERROR: Wrong AWS account. Expected 276084501312, got $ACCOUNT_ID"
-  exit 1
-fi
-
 # Initialize Terraform
 terraform init
 

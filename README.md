@@ -29,6 +29,13 @@ This repository contains comprehensive hands-on scenarios and practical exercise
 - **Migration Type**: Full load + CDC
 - **Learning Focus**: Data warehouse migration patterns
 
+### Scenario 2: Redshift Data Warehouse with ETL Pipeline
+**Use Case**: Build a complete data warehouse solution with multi-source data ingestion
+- **Sources**: CSV files, JSON APIs, RDS databases
+- **Target**: Amazon Redshift cluster with star schema design
+- **Processing**: AWS Glue ETL jobs and data cataloging
+- **Learning Focus**: End-to-end data warehouse implementation, ETL processing, and analytics
+
 
 ## 🛠️ Prerequisites
 

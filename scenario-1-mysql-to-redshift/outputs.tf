@@ -24,13 +24,13 @@ output "migration_task_arn" {
 }
 
 output "vpc_id" {
-  description = "ID of the existing VPC used"
-  value       = var.vpc_id
+  description = "ID of the default VPC used"
+  value       = data.aws_vpc.default.id
 }
 
-output "private_subnet_ids" {
-  description = "IDs of the private subnets used"
-  value       = var.private_subnet_ids
+output "subnet_ids" {
+  description = "IDs of the subnets used"
+  value       = data.aws_subnets.default.ids
 }
 
 output "dms_security_group_id" {

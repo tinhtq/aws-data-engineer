@@ -1,0 +1,13 @@
+# Example Terraform variables file for DMS Learning Scenarios
+# Copy this to the specific scenario folder as terraform.tfvars and update with your actual values
+# DO NOT commit terraform.tfvars to git - it's in .gitignore
+
+# MySQL Source Database Configuration
+mysql_username = "admin"
+mysql_password = "your-secure-mysql-password-here"
+mysql_host     = "your-mysql-host.cluster-xyz.ap-southeast-1.rds.amazonaws.com"
+
+# Redshift Target Database Configuration
+redshift_username = "admin"
+redshift_password = "your-secure-redshift-password-here"
+redshift_host     = "your-redshift-cluster.xyz.ap-southeast-1.redshift.amazonaws.com"

@@ -1,0 +1,9 @@
+# Example account configuration file for DMS Learning Scenarios
+# Copy this to the specific scenario folder as account-config.tf and update with your actual AWS account ID
+# DO NOT commit account-config.tf to git - it's in .gitignore
+
+# Uncomment and update with your AWS account ID for additional security
+# provider "aws" {
+#   region              = "ap-southeast-1"
+#   allowed_account_ids = ["YOUR_AWS_ACCOUNT_ID_HERE"]
+# }

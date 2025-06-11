@@ -1,0 +1,173 @@
+name: Security Scan - Secrets Detection
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  secret-detection:
+    name: Detect Secrets and Credentials
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for better secret detection
+    
+    - name: Run TruffleHog OSS
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: main
+        head: HEAD
+        extra_args: --debug --only-verified
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install detect-secrets
+      run: |
+        pip install detect-secrets
+    
+    - name: Run detect-secrets scan
+      run: |
+        # Check if baseline exists, if not create one
+        if [ ! -f .secrets.baseline ]; then
+          detect-secrets scan --all-files --baseline .secrets.baseline
+        fi
+        
+        detect-secrets scan --all-files --baseline .secrets.baseline
+        if [ $? -ne 0 ]; then
+          echo "❌ New secrets detected!"
+          detect-secrets scan --all-files
+          exit 1
+        else
+          echo "✅ No new secrets detected"
+        fi
+    
+    - name: Install GitLeaks
+      run: |
+        wget https://github.com/zricethezav/gitleaks/releases/download/v8.18.0/gitleaks_8.18.0_linux_x64.tar.gz
+        tar -xzf gitleaks_8.18.0_linux_x64.tar.gz
+        sudo mv gitleaks /usr/local/bin/
+    
+    - name: Run GitLeaks
+      run: |
+        gitleaks detect --source . --verbose --report-format json --report-path gitleaks-report.json
+        if [ $? -eq 1 ]; then
+          echo "❌ GitLeaks found potential secrets!"
+          cat gitleaks-report.json
+          exit 1
+        else
+          echo "✅ GitLeaks scan passed"
+        fi
+    
+    - name: Check for common credential patterns
+      run: |
+        echo "🔍 Checking for common credential patterns..."
+        
+        # Check for AWS credentials
+        if grep -r "AKIA[0-9A-Z]{16}" . --exclude-dir=.git --exclude-dir=.github; then
+          echo "❌ AWS Access Key found!"
+          exit 1
+        fi
+        
+        # Check for private keys
+        if grep -r "BEGIN.*PRIVATE KEY" . --exclude-dir=.git --exclude-dir=.github; then
+          echo "❌ Private key found!"
+          exit 1
+        fi
+        
+        # Check for database URLs with credentials
+        if grep -r "://.*:.*@" . --exclude-dir=.git --exclude-dir=.github --exclude="*.md"; then
+          echo "❌ Database URL with credentials found!"
+          exit 1
+        fi
+        
+        # Check for Terraform sensitive values in plain text
+        if grep -r "password.*=" . --include="*.tf" --include="*.tfvars" | grep -v "variable\|description"; then
+          echo "❌ Potential password in Terraform files!"
+          exit 1
+        fi
+        
+        # Check for hardcoded account IDs
+        if grep -r "[0-9]\{12\}" . --include="*.tf" --exclude-dir=.terraform; then
+          echo "⚠️  Hardcoded AWS account IDs found"
+        fi
+        
+        echo "✅ Common credential pattern check passed"
+    
+    - name: Upload GitLeaks report
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: gitleaks-report
+        path: gitleaks-report.json
+    
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request' && failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '🚨 **Security Alert**: Potential secrets or credentials detected in this PR. Please review the security scan results and remove any sensitive information before merging.'
+          })
+
+  terraform-security:
+    name: Terraform Security Scan
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, '.tf') || contains(github.event.head_commit.added, '.tf')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.6.0
+    
+    - name: Run Checkov on all scenarios
+      run: |
+        echo "🔍 Running Checkov security scan on all Terraform files..."
+        
+        # Install Checkov
+        pip install checkov
+        
+        # Scan all directories with Terraform files
+        find . -name "*.tf" -type f | head -1 | xargs dirname | while read dir; do
+          echo "Scanning directory: $dir"
+          checkov -d "$dir" --framework terraform --quiet --soft-fail
+        done
+    
+    - name: Run TFSec on all scenarios
+      run: |
+        echo "🔍 Running TFSec security scan..."
+        
+        # Install TFSec
+        curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+        
+        # Scan all directories with Terraform files
+        find . -name "*.tf" -type f | head -1 | xargs dirname | while read dir; do
+          echo "Scanning directory: $dir"
+          tfsec "$dir" --soft-fail
+        done
+    
+    - name: Check for hardcoded values in Terraform
+      run: |
+        echo "🔍 Checking Terraform files for hardcoded sensitive values..."
+        
+        # Check for hardcoded IPs
+        if grep -r "[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}" . --include="*.tf" | grep -v "0.0.0.0/0" | grep -v "127.0.0.1"; then
+          echo "⚠️  Hardcoded IP addresses found in Terraform files"
+        fi
+        
+        echo "✅ Terraform security check completed"
