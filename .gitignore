@@ -8,7 +8,7 @@ provider.tf
 .terraform.lock.hcl
 crash.log
 crash.*.log
-
+backend.tf
 # AWS credentials and sensitive files
 .aws/
 *.pem

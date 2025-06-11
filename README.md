@@ -29,49 +29,41 @@ This repository contains comprehensive hands-on scenarios and practical exercise
 - **Migration Type**: Full load + CDC
 - **Learning Focus**: Data warehouse migration patterns
 
-### Scenario 2: PostgreSQL to Amazon S3
-**Use Case**: Archive PostgreSQL data to S3 for long-term storage and analytics
-- **Source**: PostgreSQL RDS instance
-- **Target**: Amazon S3 (Parquet format)
-- **Migration Type**: Full load
-- **Learning Focus**: Data lake ingestion patterns
 
-### Scenario 3: Oracle to Amazon Aurora
-**Use Case**: Modernize legacy Oracle database to Aurora PostgreSQL
-- **Source**: Oracle RDS instance
-- **Target**: Aurora PostgreSQL cluster
-- **Migration Type**: Full load + CDC
-- **Learning Focus**: Database modernization and schema conversion
-
-### Scenario 4: MongoDB to DynamoDB
-**Use Case**: Migrate NoSQL data from MongoDB to DynamoDB
-- **Source**: MongoDB (DocumentDB)
-- **Target**: Amazon DynamoDB
-- **Migration Type**: Full load
-- **Learning Focus**: NoSQL to NoSQL migration patterns
-
-### Scenario 5: Continuous Replication Setup
-**Use Case**: Set up ongoing replication for hybrid cloud scenarios
-- **Source**: On-premises MySQL (simulated with EC2)
-- **Target**: Multiple targets (RDS, S3, Redshift)
-- **Migration Type**: CDC only
-- **Learning Focus**: Real-time data replication and multi-target scenarios
-
-## Prerequisites
+## 🛠️ Prerequisites
 
 - AWS CLI configured with appropriate permissions
-- Terraform installed
-- Basic understanding of database concepts
+- Terraform installed (for Infrastructure as Code)
+- Basic understanding of database concepts and SQL
 - Familiarity with AWS networking (VPC, subnets, security groups)
+- Python knowledge (for data processing scripts)
+- Understanding of data formats (JSON, Parquet, CSV)
 
-## DMS Key Concepts to Learn
+## 📖 AWS Data Engineering Concepts Covered
 
-1. **Replication Instance**: The compute resource that runs the migration tasks
-2. **Endpoints**: Source and target database connections
-3. **Migration Tasks**: Define what data to migrate and how
-4. **Task Settings**: Control migration behavior and performance
-5. **Table Mappings**: Define which tables/schemas to migrate
-6. **Transformation Rules**: Modify data during migration
+### Data Migration & Replication
+1. **AWS DMS Components**: Replication instances, endpoints, migration tasks
+2. **Migration Patterns**: Full load, CDC, full load + CDC
+3. **Schema Conversion**: AWS SCT for heterogeneous migrations
+4. **Multi-target Replication**: Fan-out patterns for analytics
+
+### Data Storage & Management
+1. **Data Lake Architecture**: S3-based storage with proper partitioning
+2. **Data Warehouse Design**: Redshift cluster configuration and optimization
+3. **Transactional Databases**: RDS and Aurora for OLTP workloads
+4. **NoSQL Patterns**: DynamoDB design patterns and migration strategies
+
+### Data Processing & Transformation
+1. **ETL Pipelines**: AWS Glue jobs and crawlers
+2. **Real-time Processing**: Kinesis Data Streams and Analytics
+3. **Serverless Computing**: Lambda functions for data processing
+4. **Big Data Processing**: EMR clusters for large-scale analytics
+
+### Data Governance & Security
+1. **Access Control**: IAM roles and policies for data services
+2. **Encryption**: At-rest and in-transit encryption patterns
+3. **Data Cataloging**: AWS Glue Data Catalog management
+4. **Compliance**: Data retention and audit logging
 
 ## Common DMS Use Cases
 

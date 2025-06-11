@@ -24,11 +24,16 @@ output "migration_task_arn" {
 }
 
 output "vpc_id" {
-  description = "ID of the VPC"
-  value       = module.vpc.vpc_id
+  description = "ID of the existing VPC used"
+  value       = var.vpc_id
 }
 
 output "private_subnet_ids" {
-  description = "IDs of the private subnets"
-  value       = module.vpc.private_subnets
+  description = "IDs of the private subnets used"
+  value       = var.private_subnet_ids
+}
+
+output "dms_security_group_id" {
+  description = "ID of the DMS security group"
+  value       = aws_security_group.dms.id
 }

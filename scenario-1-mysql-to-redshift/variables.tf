@@ -1,3 +1,4 @@
+# Database Configuration
 variable "mysql_username" {
   description = "MySQL database username"
   type        = string

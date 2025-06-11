@@ -1,27 +1,25 @@
-# VPC and Network Configuration
-module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+# Data source to get existing VPC information
+data "aws_vpc" "existing" {
+  id = var.vpc_id
+}
 
-  name = "dms-scenario1-vpc"
-  cidr = "10.0.0.0/16"
-
-  azs             = ["ap-southeast-1a", "ap-southeast-1b"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
-
-  enable_nat_gateway = true
-  single_nat_gateway = true
-
-  tags = {
-    Environment = "learning"
-    Scenario    = "mysql-to-redshift"
+# Data source to get existing subnet information
+data "aws_subnets" "private" {
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id]
+  }
+  
+  filter {
+    name   = "subnet-id"
+    values = var.private_subnet_ids
   }
 }
 
 # Security Groups
 resource "aws_security_group" "dms" {
   name_prefix = "dms-replication-instance"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port = 0
@@ -47,7 +45,7 @@ resource "aws_dms_replication_subnet_group" "example" {
   replication_subnet_group_description = "DMS replication subnet group"
   replication_subnet_group_id         = "dms-subnet-group"
 
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = var.private_subnet_ids
 
   tags = {
     Name = "dms-replication-subnet-group"
