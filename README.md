@@ -1,17 +1,26 @@
-# AWS DMS Learning Scenarios
+# AWS Data Engineering Learning Repository
 
-This directory contains hands-on scenarios for learning AWS Database Migration Service (DMS) as part of the AWS Data Engineer certification preparation.
+This repository contains comprehensive hands-on scenarios and practical exercises for mastering AWS Data Engineering concepts, with a focus on preparing for the AWS Certified Data Engineer - Associate certification.
 
-## Learning Objectives
+## 🎯 Learning Objectives
 
-- Understand DMS architecture and components
-- Practice different migration patterns
-- Learn about source and target endpoints
-- Implement continuous data replication
-- Handle schema conversion with AWS SCT
-- Monitor and troubleshoot DMS tasks
+**Core Data Engineering Skills:**
+- Design and implement scalable data pipelines on AWS
+- Master data ingestion, transformation, and storage patterns
+- Build real-time and batch processing solutions
+- Implement data governance and security best practices
+- Optimize performance and cost for data workloads
+- Monitor and troubleshoot data engineering solutions
 
-## Scenarios Overview
+**AWS Data Services Covered:**
+- **Data Migration**: AWS DMS, AWS SCT
+- **Data Storage**: Amazon S3, Amazon Redshift, Amazon RDS, DynamoDB
+- **Data Processing**: AWS Glue, Amazon EMR, AWS Lambda
+- **Data Streaming**: Amazon Kinesis, Amazon MSK
+- **Data Analytics**: Amazon Athena, Amazon QuickSight
+- **Orchestration**: AWS Step Functions, Amazon MWAA
+
+## 📚 Learning Scenarios Overview
 
 ### Scenario 1: MySQL to Amazon Redshift
 **Use Case**: Migrate transactional data from MySQL to Redshift for analytics
