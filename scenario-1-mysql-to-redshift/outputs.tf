@@ -1,0 +1,34 @@
+output "replication_instance_arn" {
+  description = "ARN of the DMS replication instance"
+  value       = aws_dms_replication_instance.example.replication_instance_arn
+}
+
+output "replication_instance_id" {
+  description = "ID of the DMS replication instance"
+  value       = aws_dms_replication_instance.example.replication_instance_id
+}
+
+output "source_endpoint_arn" {
+  description = "ARN of the source MySQL endpoint"
+  value       = aws_dms_endpoint.source.endpoint_arn
+}
+
+output "target_endpoint_arn" {
+  description = "ARN of the target Redshift endpoint"
+  value       = aws_dms_endpoint.target.endpoint_arn
+}
+
+output "migration_task_arn" {
+  description = "ARN of the DMS migration task"
+  value       = aws_dms_replication_task.example.replication_task_arn
+}
+
+output "vpc_id" {
+  description = "ID of the VPC"
+  value       = module.vpc.vpc_id
+}
+
+output "private_subnet_ids" {
+  description = "IDs of the private subnets"
+  value       = module.vpc.private_subnets
+}
